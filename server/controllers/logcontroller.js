@@ -3,10 +3,10 @@ let router = express.Router();
 let validateSession = require('../middleware/validate-session');
 const Log = require('../db').import('../models/log');
 
-router.get('/practice', validateSession, function(req, res)
-{
-    res.send('Hey! This is a practice route!')
-})
+// router.get('/practice', validateSession, function(req, res)
+// {
+//     res.send('Hey! This is a practice route!')
+// });
 router.post('/', validateSession, (req, res) => {
     const logEntry = {
         description: req.body.log.description,
@@ -26,6 +26,14 @@ router.get('/', validateSession, (req, res) => {
     .then(logs => res.status(200).json(logs))
     .catch(err => res.status(500).json({ error: err}));
  });
+ router.get('/:id', validateSession, function (req, res) {
+    let id = req.params.id;
+    Log.findAll({
+      where: { id: id }
+    })
+      .then(logs => res.status(200).json(logs))
+      .catch(err => res.status(500).json({ error: err }))
+  });
 router.put('/:id', validateSession, function (req, res) {
     const updateLogEntry = {
         description: req.body.log.description,
